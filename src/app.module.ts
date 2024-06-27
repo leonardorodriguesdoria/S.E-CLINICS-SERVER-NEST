@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { PacienteModule } from './auth_patient/paciente.module';
-import { Paciente } from './auth_patient/entity/paciente.entity';
+import { AuthPatientModule } from './auth_patient/auth_patient.module';
+import { AuthPatient } from './auth_patient/entity/auth_patient.entity';
+import { DataSource } from 'typeorm';
 
 const databasePort = process.env.DB_PORT as unknown as number | undefined;
 
@@ -18,13 +19,15 @@ const databasePort = process.env.DB_PORT as unknown as number | undefined;
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [Paciente],
+      entities: [AuthPatient],
       migrations: ['dist/db/migrations/*.js'],
       synchronize: process.env.ENV === 'development',
-    }),
-    PacienteModule,
+    } as TypeOrmModuleOptions),
+    AuthPatientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly dataSource: DataSource) {}
+}
