@@ -9,7 +9,7 @@ import { AuthPatient } from './entity/auth_patient.entity';
   imports: [
     TypeOrmModule.forFeature([AuthPatient]),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: 'VGhlIGJvb2sncyBvbiB0aGUgdGFibGU=',
     }),
   ],
   controllers: [PacienteController],
