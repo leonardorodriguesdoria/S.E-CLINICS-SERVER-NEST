@@ -4,14 +4,13 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthPatientRegisterDto } from '../dto/auth-patient-register';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { hashPassword, comparePassword } from 'src/helpers/hashPassword';
 import { AuthPatient } from '../entity/auth_patient.entity';
 import { JwtService } from '@nestjs/jwt';
-import { AuthPatientLoginDto } from '../dto/auth-patient-login';
+import { IRegisterPatient } from 'src/interfaces/RegisterPatient.interface';
+import { ILoginPatient } from 'src/interfaces/LoginPatient.interface';
 
 @Injectable()
 export class AuthPatientService {
@@ -24,7 +23,7 @@ export class AuthPatientService {
   ) {}
 
   //Função para cadastro de cliente
-  async create(registerPatient: AuthPatientRegisterDto) {
+  async create(registerPatient: IRegisterPatient) {
     const { name, email, password } = registerPatient;
 
     const patientAlreadyExists = await this.patientRepository.findOne({
@@ -85,7 +84,7 @@ export class AuthPatientService {
     }
   }
 
-  async login(body: AuthPatientLoginDto) {
+  async login(body: ILoginPatient) {
     const { email, password } = body;
 
     const patient = await this.patientRepository.findOne({

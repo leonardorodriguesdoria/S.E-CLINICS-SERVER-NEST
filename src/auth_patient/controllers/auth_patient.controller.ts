@@ -30,7 +30,7 @@ export class PacienteController {
   }
 
   @Post('/me')
-  async me(@Headers('cookie') access_token) {
-    return this.authPatientService.checkToken(access_token.split(' ')[1]);
+  async me(@Headers() headers) {
+    return headers;
   }
 }
