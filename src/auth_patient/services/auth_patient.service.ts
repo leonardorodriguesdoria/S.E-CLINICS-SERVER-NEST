@@ -55,7 +55,7 @@ export class AuthPatientService {
           email: patient.email,
         },
         {
-          expiresIn: '7 days',
+          expiresIn: '3 days',
           subject: String(patient.id),
           issuer: this.issuer,
           audience: this.audience,
@@ -103,7 +103,17 @@ export class AuthPatientService {
       throw new UnauthorizedException('Email e/ou senhas inválidos');
     }
 
-    return this.createToken(patient);
+    const token = this.jwtService.sign(
+      { id: patient.id, email: patient.email },
+      {
+        expiresIn: '3 days',
+        subject: String(patient.id),
+        issuer: this.issuer,
+        audience: this.audience,
+      },
+    );
+
+    return { access_token: token };
   }
 
   async forget(email: string) {
