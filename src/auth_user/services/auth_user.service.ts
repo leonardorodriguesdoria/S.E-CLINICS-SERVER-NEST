@@ -7,22 +7,22 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hashPassword, comparePassword } from 'src/helpers/hashPassword';
-import { AuthPatient } from '../entity/auth_patient.entity';
+import { User } from 'src/entities/Users.entity';
 import { JwtService } from '@nestjs/jwt';
 import { IRegisterPatient } from 'src/interfaces/RegisterPatient.interface';
 import { ILoginPatient } from 'src/interfaces/LoginPatient.interface';
 
 @Injectable()
-export class AuthPatientService {
+export class AuthUserService {
   private issuer = 'login';
   private audience = 'patients';
   constructor(
-    @InjectRepository(AuthPatient)
-    private readonly patientRepository: Repository<AuthPatient>,
+    @InjectRepository(User)
+    private readonly patientRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
-  //Função para cadastro de cliente
+  //Função para cadastro de usuário
   async create(registerPatient: IRegisterPatient) {
     const { name, email, password } = registerPatient;
 
@@ -47,7 +47,7 @@ export class AuthPatientService {
     return { message: 'Usuário cadastrado com Sucesso' };
   }
 
-  async createToken(patient: AuthPatient) {
+  async createToken(patient: User) {
     return {
       access_token: this.jwtService.sign(
         {
@@ -136,7 +136,7 @@ export class AuthPatientService {
     const patient = (await this.patientRepository.update(
       { id: id },
       { password: password },
-    )) as unknown as AuthPatient;
+    )) as unknown as User;
 
     return this.createToken(patient);
   }
